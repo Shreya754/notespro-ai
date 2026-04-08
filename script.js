@@ -1,5 +1,3 @@
-const API = "";
-
 const input = document.getElementById("topic");
 const output = document.getElementById("output");
 const historyList = document.getElementById("historyList");

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NotesPro — Research Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Institutional Top Banner -->
+  <div class="inst-banner">
+    <div class="left">
+      <div class="seal-sm">⚡</div>
+      <span class="inst-name">NotesPro — Academic Research Console</span>
+    </div>
+    <div class="right">
+      <span id="userDisplay"></span>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Main Application -->
+  <div class="app">
+
+    <!-- Page Title -->
+    <div class="page-title-bar">
+      <h2>Knowledge Research Module</h2>
+      <span class="course-tag">AI Notes · Voice · PDF Export</span>
+    </div>
+
+    <!-- Search Panel -->
+    <div class="search-panel">
+      <div class="search-panel-label">Search Query</div>
+
+      <div class="search-row">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="topic" placeholder="Enter a topic...">
+        </div>
+
+        <button class="btn-search" onclick="getNotes()">Generate</button>
+      </div>
+
+      <!-- 🔥 FIXED BUTTONS -->
+      <div class="tool-row">
+        <button class="btn-tool" onclick="startVoiceSearch()">🎤 Voice Input</button>
+        <button class="btn-tool" onclick="downloadNotes()">📄 Export PDF</button>
+        <button class="btn-tool" onclick="speakNotes()">🔊 Listen</button>
+      </div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="loader hidden">
+      <div class="loader-ring"></div>
+      <span>Generating notes...</span>
+    </div>
+
+    <!-- Output -->
+    <div id="output"></div>
+
+    <!-- History -->
+    <div class="history">
+      <div class="history-header">
+        <span>📜</span>
+        <h3>Search History</h3>
+      </div>
+      <div class="history-body">
+        <ul id="historyList"></ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 🔥 REQUIRED FOR REAL PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- MAIN SCRIPT -->
+  <script src="script.js"></script>
+
+</body>
+</html>

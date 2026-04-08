@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // ✅ Serve frontend files
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, "public")));
 
 const DB = "./db.json";
 
@@ -31,7 +31,7 @@ function writeDB(data) {
 
 // Root route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Signup

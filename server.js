@@ -5,8 +5,7 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const fetch = require("node-fetch");
 
 const app = express();
 

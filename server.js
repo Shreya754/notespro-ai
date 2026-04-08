@@ -9,10 +9,11 @@ const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// 🔥 SERVE FRONTEND
+// ✅ Serve frontend files
 app.use(express.static(path.join(__dirname)));
 
 const DB = "./db.json";
@@ -61,7 +62,7 @@ app.post("/login", (req, res) => {
   res.json({ success: !!user });
 });
 
-// History save
+// Save history
 app.post("/history", (req, res) => {
   let db = readDB();
   let { username, topic } = req.body;
@@ -78,7 +79,7 @@ app.post("/history", (req, res) => {
   res.json({ success: true });
 });
 
-// History get
+// Get history
 app.get("/history/:username", (req, res) => {
   let db = readDB();
   let user = db.users.find(u => u.username === req.params.username);
@@ -125,7 +126,7 @@ app.post("/ai-notes", async (req, res) => {
   }
 });
 
-// 🔥 FALLBACK ROUTE
+// fallback
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });

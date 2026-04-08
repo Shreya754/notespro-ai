@@ -3,19 +3,21 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
+const path = require("path");
 
-// fetch fix for Node
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
+// 🔥 SERVE FRONTEND
+app.use(express.static(path.join(__dirname)));
+
 const DB = "./db.json";
 
-// ── DB HELPERS ──
+// DB helpers
 function readDB() {
   if (!fs.existsSync(DB)) {
     fs.writeFileSync(DB, JSON.stringify({ users: [] }, null, 2));
@@ -27,7 +29,12 @@ function writeDB(data) {
   fs.writeFileSync(DB, JSON.stringify(data, null, 2));
 }
 
-// ── AUTH ──
+// Root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// Signup
 app.post("/signup", (req, res) => {
   let db = readDB();
   let { username, password } = req.body;
@@ -39,11 +46,10 @@ app.post("/signup", (req, res) => {
   db.users.push({ username, password, history: [] });
   writeDB(db);
 
-  console.log("✅ New user:", username);
-
   res.json({ success: true });
 });
 
+// Login
 app.post("/login", (req, res) => {
   let db = readDB();
   let { username, password } = req.body;
@@ -52,67 +58,40 @@ app.post("/login", (req, res) => {
     u => u.username === username && u.password === password
   );
 
-  console.log("🔐 Login attempt:", username);
-
   res.json({ success: !!user });
 });
 
-// ── HISTORY (FIXED + DEBUG) ──
+// History save
 app.post("/history", (req, res) => {
-  try {
-    let db = readDB();
-    let { username, topic } = req.body;
+  let db = readDB();
+  let { username, topic } = req.body;
 
-    console.log("👉 Incoming history:", username, topic);
+  let user = db.users.find(u => u.username === username);
+  if (!user) return res.json({ success: false });
 
-    if (!username || !topic) {
-      return res.status(400).json({ success: false });
-    }
+  if (!user.history) user.history = [];
 
-    let user = db.users.find(u => u.username === username);
+  user.history.unshift(topic);
+  user.history = [...new Set(user.history)].slice(0, 10);
 
-    if (!user) {
-      console.log("❌ User not found");
-      return res.json({ success: false });
-    }
-
-    if (!user.history) user.history = [];
-
-    user.history.unshift(topic);
-    user.history = [...new Set(user.history)].slice(0, 10);
-
-    writeDB(db);
-
-    console.log("✅ History saved:", user.history);
-
-    res.json({ success: true });
-
-  } catch (err) {
-    console.error("🔥 History ERROR:", err);
-    res.status(500).json({ success: false });
-  }
+  writeDB(db);
+  res.json({ success: true });
 });
 
+// History get
 app.get("/history/:username", (req, res) => {
   let db = readDB();
   let user = db.users.find(u => u.username === req.params.username);
-
-  console.log("📜 Load history for:", req.params.username);
-
   res.json(user ? user.history : []);
 });
 
-// ── AI NOTES (GROQ FINAL) ──
+// AI Notes
 app.post("/ai-notes", async (req, res) => {
   const { topic } = req.body;
 
-  if (!topic) {
-    return res.status(400).json({ error: "Topic required" });
-  }
-
-  if (!process.env.GROQ_API_KEY) {
+  if (!topic) return res.status(400).json({ error: "Topic required" });
+  if (!process.env.GROQ_API_KEY)
     return res.status(500).json({ error: "API key missing" });
-  }
 
   try {
     const response = await fetch(
@@ -128,26 +107,7 @@ app.post("/ai-notes", async (req, res) => {
           messages: [
             {
               role: "user",
-              content: `You are an expert teacher.
-
-Create detailed, structured exam notes.
-
-Topic: ${topic}
-
-Include:
-- Definition
-- Explanation
-- Key Points
-- Terms
-- Examples
-- Applications
-- Advantages
-- Disadvantages
-- Mistakes
-- Tips
-- Summary
-
-Keep it clear and useful for exams.`
+              content: `Create structured exam notes for: ${topic}`
             }
           ]
         })
@@ -156,29 +116,19 @@ Keep it clear and useful for exams.`
 
     const data = await response.json();
 
-    if (!data.choices) {
-      console.error("❌ GROQ ERROR:", data);
-      return res.status(500).json({ error: "AI failed" });
-    }
-
     res.json({
-      text: data.choices[0].message.content
+      text: data.choices?.[0]?.message?.content || "AI failed"
     });
 
-  } catch (err) {
-    console.error("🔥 AI ERROR:", err);
-    res.status(500).json({ error: "AI failed" });
+  } catch {
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-// ── ROOT ──
-app.get("/", (req, res) => {
-  res.send("✅ NotesPro Backend Running (FINAL)");
+// 🔥 FALLBACK ROUTE
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// ── SERVER ──
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("🚀 Server running on port " + PORT);
-});
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log("Server running on", PORT));

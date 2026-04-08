@@ -30,7 +30,7 @@ function writeDB(data) {
   fs.writeFileSync(DB, JSON.stringify(data, null, 2));
 }
 
-// Root
+// Root route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
@@ -121,15 +121,14 @@ app.post("/ai-notes", async (req, res) => {
       text: data.choices?.[0]?.message?.content || "AI failed"
     });
 
-  } catch {
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-// fallback
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
+// ✅ IMPORTANT FIX (Render compatibility)
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log("Server running on", PORT));
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Server running on", PORT);
+});

@@ -1,7 +1,26 @@
-# NotesPro-Research-Console
-NotesPro AI is a full-stack web application that generates exam-focused revision notes using AI. It allows users to search any topic and instantly get structured notes including definitions, key points, and summaries. The platform includes authentication, history tracking, and PDF export for efficient studying.
-NotesPro AI is built to simplify exam preparation through AI-generated notes. The application allows users to search for any academic topic and instantly receive structured revision content, including concise definitions, key bullet points, important terms, and quick summaries.
+# NotesPro AI 📚
 
-The platform includes a secure authentication system, enabling users to create accounts and maintain personalized search history. It also supports exporting notes as PDFs for offline study. The backend is built using Node.js and Express, handling API requests and user data, while the frontend provides an interactive and user-friendly interface.
+An AI-powered academic research and notes generation platform.
 
-This project demonstrates integration of AI APIs, full-stack development, RESTful services, and deployment, making it a practical and scalable learning tool.
+## 🚀 Live Demo
+https://notespro-ai-5m3l.onrender.com
+
+## ✨ Features
+- User Authentication (Signup/Login)
+- AI Notes Generation (Groq API)
+- Search History Tracking
+- Clean UI with Voice + PDF options
+
+## 🛠 Tech Stack
+- Frontend: HTML, CSS, JavaScript
+- Backend: Node.js, Express
+- Database: JSON (local)
+- Deployment: Render
+
+## ⚙️ Setup (Local)
+
+```bash
+git clone https://github.com/YOUR_USERNAME/notespro-ai.git
+cd notespro-ai
+npm install
+node server.js

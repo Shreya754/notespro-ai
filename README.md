@@ -20,7 +20,7 @@ https://notespro-ai-5m3l.onrender.com
 ## ⚙️ Setup (Local)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/notespro-ai.git
+git clone https://github.com/Shreya754/notespro-ai.git
 cd notespro-ai
 npm install
 node server.js

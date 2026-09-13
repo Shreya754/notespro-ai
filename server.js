@@ -116,8 +116,13 @@ app.post("/ai-notes", async (req, res) => {
 
     const data = await response.json();
 
+    if (!data.choices) {
+      console.error("Groq API error:", JSON.stringify(data));
+    }
+
     res.json({
-      text: data.choices?.[0]?.message?.content || "AI failed"
+      text: data.choices?.[0]?.message?.content || "AI failed",
+      debug: data.error || null
     });
 
   } catch (err) {
